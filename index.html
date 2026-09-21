@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title id="pageTitle">Product</title>
+<link rel="icon" href="data:,">
+<style>
+  :root{
+    --ink:#17181c;
+    --paper:#f6f4ef;
+    --panel:#1f2126;
+    --gold:#d9a441;
+    --line:#e7e3d9;
+    --muted:#6b6d73;
+    --radius:2px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:20px clamp(20px,5vw,56px);
+    border-bottom:1px solid var(--line);
+  }
+  .brand{
+    font-weight:600;
+    letter-spacing:.01em;
+    font-size:15px;
+  }
+  .brand span{color:var(--gold);}
+
+  .layout{
+    display:grid;
+    grid-template-columns:1.1fr 1fr;
+    max-width:1080px;
+    margin:0 auto;
+    padding:clamp(28px,5vw,64px) clamp(20px,5vw,56px) 40px;
+    gap:clamp(28px,5vw,64px);
+  }
+  @media (max-width:760px){
+    .layout{grid-template-columns:1fr; padding-top:28px;}
+  }
+
+  .media{
+    position:relative;
+    background:var(--panel);
+    border-radius:var(--radius);
+    aspect-ratio:4/5;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .media img{
+    width:100%;height:100%;object-fit:cover;display:block;
+  }
+  .media .placeholder{
+    color:#8b8d94;
+    font-size:13px;
+    text-align:center;
+    padding:24px;
+  }
+
+  .info .kicker{
+    font-size:13px;
+    color:var(--muted);
+    margin:0 0 10px;
+  }
+  h1{
+    font-family:Georgia,"Times New Roman",serif;
+    font-weight:600;
+    font-size:clamp(30px,4vw,42px);
+    line-height:1.08;
+    margin:0 0 14px;
+    letter-spacing:-0.01em;
+  }
+  .price{
+    font-size:22px;
+    font-weight:600;
+    margin:0 0 22px;
+  }
+  .price .was{
+    color:var(--muted);
+    font-weight:400;
+    text-decoration:line-through;
+    font-size:16px;
+    margin-left:10px;
+  }
+  .desc{
+    color:#2c2d31;
+    font-size:15.5px;
+    max-width:52ch;
+    margin:0 0 26px;
+  }
+
+  .specs{
+    list-style:none;
+    padding:0;
+    margin:0 0 30px;
+    border-top:1px solid var(--line);
+  }
+  .specs li{
+    display:flex;
+    justify-content:space-between;
+    gap:16px;
+    padding:11px 0;
+    border-bottom:1px solid var(--line);
+    font-size:14px;
+  }
+  .specs li span:first-child{color:var(--muted); flex-shrink:0;}
+  .specs li span:last-child{text-align:right;}
+
+  .variants{
+    margin:0 0 30px;
+  }
+  .variants .label{
+    font-size:13px;
+    color:var(--muted);
+    margin:0 0 10px;
+  }
+  .swatches{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .swatches button{
+    border:1px solid var(--line);
+    background:#fff;
+    padding:9px 16px;
+    font-size:13.5px;
+    border-radius:var(--radius);
+    cursor:pointer;
+    color:var(--ink);
+  }
+  .swatches button.active{
+    border-color:var(--ink);
+    background:var(--ink);
+    color:#fff;
+  }
+
+  .actions{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-bottom:34px;
+  }
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:14px 22px;
+    border-radius:var(--radius);
+    font-size:14.5px;
+    font-weight:600;
+    text-decoration:none;
+    border:1px solid var(--ink);
+  }
+  .btn.primary{background:var(--ink); color:#fff;}
+  .btn.secondary{background:transparent; color:var(--ink);}
+
+  .scan-note{
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+    padding:16px 18px;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    font-size:13px;
+    color:var(--muted);
+  }
+  .scan-note strong{color:var(--ink);}
+
+  footer{
+    text-align:center;
+    padding:26px 20px 40px;
+    font-size:12.5px;
+    color:var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <img src="knox-logo.webp" alt="Knox" style="height:28px;width:auto;">
+  <div id="storeLinkWrap"></div>
+</div>
+
+<main class="layout">
+  <div class="media">
+    <img id="productImage" alt="" style="display:none;">
+    <div class="placeholder" id="mediaPlaceholder">Add a photo — edit PRODUCT.image in the script below</div>
+  </div>
+
+  <div class="info">
+    <p class="kicker" id="productCategory">Category</p>
+    <h1 id="productName">Product name</h1>
+    <p class="price" id="productPrice">Rs. 0</p>
+    <p class="desc" id="productDesc">Description goes here.</p>
+
+    <ul class="specs" id="productSpecs"></ul>
+
+    <div class="variants" id="variantsBlock" style="display:none;">
+      <p class="label" id="variantLabel">Options</p>
+      <div class="swatches" id="variantSwatches"></div>
+    </div>
+
+    <div class="actions" id="actionsBlock"></div>
+
+    <div class="scan-note">
+      <span>↦</span>
+      <span><strong>You're here because you scanned the QR code</strong> on the product. This page always shows the latest details — edit it any time without reprinting the code.</span>
+    </div>
+  </div>
+</main>
+
+<footer id="footerText">© 2026 PokitBio</footer>
+
+<script>
+/* ============================================================
+   EDIT EVERYTHING BELOW THIS LINE — this is the only part
+   you need to touch to turn this into your product's page.
+   ============================================================ */
+const PRODUCT = {
+  brand: "Knox",
+  category: "Solar Inverter",
+  name: "G4 Pro 40K/75kpV",
+  price: "",                 // add your price here, e.g. "Rs. 450,000" — leave "" to hide
+  wasPrice: "",
+  description: "40kW three-phase grid-tied solar inverter, non-isolated topology, IP66 rated for outdoor installation.",   // edit as needed
+  image: "",                 // e.g. "https://your-image-url.jpg" — leave "" to show placeholder
+  specs: [
+    { label: "Manufacturer", value: "Xerox" },
+    { label: "Model", value: "G4 Pro 40K/75kpV" },
+    { label: "Max. input voltage", value: "d.c. 1100V" },
+    { label: "Operating voltage range", value: "d.c. 200–1000V" },
+    { label: "Max. input current", value: "d.c. 40A/40A/20A/32A, 50A/50A/25A/40A" },
+    { label: "Isc PV (absolute maximum)", value: "—" },
+    { label: "Rated grid voltage", value: "3/N/PE-380V" },
+    { label: "Rated grid frequency", value: "50Hz" },
+    { label: "Rated AC output active power", value: "40kW" },
+    { label: "Rated AC output apparent power", value: "40kVA" },
+    { label: "Max. AC output apparent power", value: "44kVA" },
+    { label: "Max. continuous output current", value: "a.c. 64.0 A" },
+    { label: "Adjustable cos φ", value: "0.8 ind. .. 0.8 cap" },
+    { label: "Operating temperature range", value: "-30°C ... +60°C" },
+    { label: "Topology", value: "Non-isolated" },
+    { label: "Ingress protection", value: "IP66" },
+    { label: "Protective class", value: "I (PV), II (MAINS)" }
+  ],
+  variantLabel: "Options",
+  variants: [],               // leave as [] to hide this section entirely
+  actions: [
+    { label: "Contact for pricing", url: "https://wa.me/923000000000", style: "primary" }
+  ],
+  footer: "© 2026 Knox. All rights reserved."
+};
+/* ============================================================
+   Nothing below this line needs editing for normal use.
+   ============================================================ */
+
+document.getElementById("pageTitle").textContent = PRODUCT.name + " — " + PRODUCT.brand;
+document.getElementById("productCategory").textContent = PRODUCT.category;
+document.getElementById("productName").textContent = PRODUCT.name;
+document.getElementById("productDesc").textContent = PRODUCT.description;
+document.getElementById("footerText").textContent = PRODUCT.footer;
+
+const priceEl = document.getElementById("productPrice");
+priceEl.textContent = PRODUCT.price;
+if (PRODUCT.wasPrice) {
+  const was = document.createElement("span");
+  was.className = "was";
+  was.textContent = PRODUCT.wasPrice;
+  priceEl.appendChild(was);
+}
+
+if (PRODUCT.image) {
+  const img = document.getElementById("productImage");
+  img.src = PRODUCT.image;
+  img.style.display = "block";
+  document.getElementById("mediaPlaceholder").style.display = "none";
+}
+
+const specsEl = document.getElementById("productSpecs");
+PRODUCT.specs.forEach(s => {
+  const li = document.createElement("li");
+  li.innerHTML = "<span>" + s.label + "</span><span>" + s.value + "</span>";
+  specsEl.appendChild(li);
+});
+
+if (PRODUCT.variants && PRODUCT.variants.length) {
+  document.getElementById("variantsBlock").style.display = "block";
+  document.getElementById("variantLabel").textContent = PRODUCT.variantLabel || "Options";
+  const wrap = document.getElementById("variantSwatches");
+  PRODUCT.variants.forEach((v, i) => {
+    const b = document.createElement("button");
+    b.textContent = v;
+    if (i === 0) b.classList.add("active");
+    b.onclick = () => {
+      wrap.querySelectorAll("button").forEach(x => x.classList.remove("active"));
+      b.classList.add("active");
+    };
+    wrap.appendChild(b);
+  });
+}
+
+const actionsEl = document.getElementById("actionsBlock");
+PRODUCT.actions.forEach(a => {
+  const link = document.createElement("a");
+  link.href = a.url;
+  link.target = "_blank";
+  link.rel = "noopener";
+  link.className = "btn " + (a.style || "secondary");
+  link.textContent = a.label;
+  actionsEl.appendChild(link);
+});
+</script>
+
+</body>
+</html>
